@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!-- 页面meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>管理员信息页面</title>
+    <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
+    <th:block th:replace="/common_resources::common_css"></th:block>
+    <th:block th:replace="/common_resources::common_js"></th:block>
+
+</head>
+
+<body class="hold-transition skin-purple sidebar-mini">
+
+<header th:replace="~{/common_header::header}"></header>
+<aside th:replace="/common_aside::aside"></aside>
+
+<div class="wrapper">
+
+    <div class="content-wrapper">
+
+        <!-- 内容头部 -->
+        <section class="content-header">
+            <h1>
+                管理员信息管理
+                <small>管理员信息列表</small>
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="/index"><i class="fa fa-dashboard"></i> 首页</a></li>
+                <li><a href="/admin/all">管理员信息管理</a></li>
+                <li class="active">管理员信息列表</li>
+            </ol>
+        </section>
+        <!-- 内容头部 /-->
+
+        <!-- 正文区域 -->
+        <section class="content">
+
+            <!-- .box-body -->
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">列表</h3>
+                </div>
+
+                <div class="box-body">
+
+                    <!-- 数据表格 -->
+                    <div class="table-box">
+
+                        <!--工具栏-->
+                        <div class="pull-left">
+                            <div class="form-group form-inline">
+                                <div class="btn-group">
+                                    <a th:href="@{/admin_add}">
+                                        <button type="button"  class="btn btn-default" title="新建"><i class="fa fa-file-o"></i> 新建</button>
+                                    </a>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <!--工具栏/-->
+
+                        <!--数据列表-->
+                        <table id="dataList" class="table table-bordered table-striped table-hover dataTable">
+                            <thead>
+                            <tr>
+
+                                <th >账号</th>
+                                <th >姓名</th>
+                                <th >电话</th>
+                                <th >邮箱</th>
+                                <th >操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr th:each="admins:${adminPage.records}">
+                                <input type="hidden" th:value="${admins.id}" id="adminId">
+                                <td th:text="${admins.username}"></td>
+                                <td th:text="${admins.name}"></td>
+                                <td th:text="${admins.phoneNumber}"></td>
+                                <td th:text="${admins.email}"></td>
+
+                                <td class="text-center">
+                                    <a th:href="@{/admin/desc(id=${admins.id})}" class="btn bg-gray btn-xs">详情</a>
+                                    <a th:href="@{/admin/findRole(id=${admins.id})}" class="btn bg-blue btn-xs">分配角色</a>
+                                    <a th:href="@{/admin/updateById(id=${admins.id})}" class="btn bg-olive btn-xs">修改</a>
+                                    <button type="button" class="btn bg-red btn-xs" th:id="${admins.id}" onclick="delAdmin(this.id)">删除</button>
+
+                                </td>
+                            </tr>
+
+                            </tbody>
+
+                        </table>
+                        <!--数据列表/-->
+
+
+                    </div>
+                    <!-- 数据表格 /-->
+
+
+                </div>
+                <!-- /.box-body -->
+
+                <!-- .box-footer-->
+                <div class="box-footer">
+                    <div class="pull-left">
+                        <div class="form-group form-inline">
+                            总共 <span th:text="${adminPage.pages}"></span> 页，
+                            共<span th:text="${adminPage.total}"></span> 条数据
+                        </div>
+                    </div>
+
+                    <div class="box-tools pull-right">
+                        <ul class="pagination"></ul>
+                    </div>
+
+                </div>
+                <!-- /.box-footer-->
+
+
+
+            </div>
+
+        </section>
+        <!-- 正文区域 /-->
+
+    </div>
+
+</div>
+<script>
+
+    function delAdmin(id) {
+        if (confirm("是否删除？")==true){
+            deleteAdmin(id);
+        }
+    };
+    function update(adminId) {
+        console.log(adminId);
+        $.get("/admin/updateById",{adminId:adminId},function (result){
+
+        })
+    }
+    function deleteAdmin(adminId) {
+
+
+        console.log(adminId);
+        $.get("/admin/delete",{adminId:adminId},function (result){
+
+            alert(result);
+            location.href="/admin/all";
+        })
+    };
+
+</script>
+<footer th:replace="~{/common_footer::footer}"></footer>
+<script th:inline="javascript">
+
+    var currentPage=[[${adminPage.current}]];
+    var pages=[[${adminPage.pages}]];
+    var context=[[${#servletContext.contextPath}]];
+    // 分页插件
+
+    $(".pagination").bootstrapPaginator({
+        bootstrapMajorVersion: 3, // bootstrap版本
+        currentPage: currentPage, // 当前页
+        totalPages: pages, // 总页数
+        numberOfPages: 5, // 最多显示多少页
+        itemTexts: function (type, page, current) {
+            switch (type) {
+                case "first":
+                    return "首页";
+                case "prev":
+                    return "上一页";
+                case "next":
+                    return "下一页";
+                case "last":
+                    return "末页";
+                case "page":
+                    return page;
+            }
+        },
+        onPageClicked: function (event, originalEvent, type, page) { // 点击页码执行的方法
+                location.href =context+ "/admin/all?page=" + page;
+        }
+    });
+
+</script>
+</body>
+
+</html>

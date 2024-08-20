@@ -1,0 +1,158 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<aside class="main-sidebar" th:fragment="aside">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+        <!-- Sidebar user panel -->
+        <div class="user-panel">
+            <div class="pull-left image">
+                <img src="/backstage/images/liqin.png" class="img-circle" alt="User Image">
+            </div>
+            <div class="pull-left info">
+                <p  id="userName" th:text="${#request.session.getAttribute('name')}">管理员</p>
+
+                <a href="#"><i class="fa fa-circle text-success"></i> 在线</a>
+            </div>
+        </div>
+
+
+
+        <!-- sidebar menu: : style can be found in sidebar.less -->
+        <ul class="sidebar-menu">
+            <li class="header">菜单</li>
+
+            <li id="admin-index"><a href="/index"><i class="fa fa-dashboard"></i> <span>首页</span></a></li>
+
+            <!-- 菜单 -->
+
+
+
+            <li class="treeview" id="system" sec:authorize="hasAnyAuthority('/system')">
+                <a href="#">
+                    <i class="fa fa-folder"></i> <span>系统管理</span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+
+                    <li id="admin" >
+                        <a href="/admin/all">
+                            <i class="fa fa-circle-o"></i> 管理员管理
+                        </a>
+                    </li>
+
+                    <li id="role" >
+                        <a href="/role/all">
+                            <i class="fa fa-circle-o"></i> 角色管理
+                        </a>
+                    </li>
+
+<!--                    <li id="permission" >-->
+<!--                        <a href="/permission/all">-->
+<!--                            <i class="fa fa-circle-o"></i> 权限管理-->
+<!--                        </a>-->
+<!--                    </li>-->
+
+                </ul>
+            </li>
+
+
+
+            <li class="treeview" id="message" sec:authorize="hasAnyAuthority('/message')">
+                <a href="#">
+                    <i class="fa fa-database"></i> <span>信息管理</span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+
+                    <li id="teacher" sec:authorize="hasAnyAuthority('/teacher/all')">
+                        <a href="/teacher/all">
+                            <i class="fa fa-circle-o"></i> 教师信息管理
+                        </a>
+                    </li>
+
+                    <li id="student" sec:authorize="hasAnyAuthority('/student/all')">
+                        <a href="/student/all">
+                            <i class="fa fa-circle-o"></i> 学生信息管理
+                        </a>
+                    </li>
+
+                    <li id="course" sec:authorize="hasAnyAuthority('/course/all')">
+                        <a href="/course/all">
+                            <i class="fa fa-circle-o"></i> 课程信息管理
+                        </a>
+                    </li>
+
+                </ul>
+            </li>
+
+            <li class="treeview" id="openCourse" sec:authorize="hasAnyAuthority('/openCourse')">
+                <a href="#">
+                    <i class="fa fa-laptop"></i> <span>开课管理</span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+
+                    <li id="setCourse" >
+                        <a th:href="@{/syllabus/all(teacherName=${#request.session.getAttribute('name')})}">
+                            <i class="fa fa-circle-o"></i> 开设课程
+                        </a>
+                    </li>
+
+
+                </ul>
+            </li>
+
+            <li class="treeview" id="selectCourse" sec:authorize="hasAnyAuthority('/selectCourse')">
+                <a href="#">
+                    <i class="fa fa-television"></i> <span>选课管理</span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+
+                    <li id="publicCourse" >
+                        <a th:href="@{/syllabus/selectCourse(username=${#authentication.name})}">
+                            <i class="fa fa-circle-o"></i> 公共选课
+                        </a>
+                    </li>
+
+                    <li id="myCourse" >
+                        <a th:href="@{/syllabus/selectedCourse(username=${#authentication.name})}">
+                            <i class="fa fa-circle-o"></i> 我的课程
+                        </a>
+                    </li>
+
+                </ul>
+            </li>
+
+
+
+        </ul>
+    </section>
+    <!-- /.sidebar -->
+    <script>
+        $(function () {
+            //点击外层菜单时记录他的id
+            $(".treeview").click(function (){
+                sessionStorage.menu=$(this).attr("id");
+            })
+            //点击内层菜单时记录他的id
+            $(".treeview li").click(function (){
+                sessionStorage.menu2=$(this).attr("id");
+            })
+
+            //对已点击的外层菜单添加class属性
+            $("#"+sessionStorage.menu).addClass("active")
+            //对已点击的内层菜单添加css样式
+            $("#"+sessionStorage.menu2+" a").css("color","white")
+        })
+    </script>
+</aside>
+</html>

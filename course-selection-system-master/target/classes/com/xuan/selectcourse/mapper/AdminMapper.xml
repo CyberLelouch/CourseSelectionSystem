@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xuan.selectcourse.mapper.AdminMapper">
+    <resultMap id="adminMap" type="com.xuan.selectcourse.pojo.Admin">
+        <id property="id" column="id"></id>
+        <result property="name" column="name"></result>
+        <association property="user" javaType="com.xuan.selectcourse.pojo.User">
+            <result property="username" column="username"></result>
+        </association>
+        <collection property="roleList"  ofType="com.xuan.selectcourse.pojo.Role">
+            <result property="roleName" column="roleName"></result>
+            <result property="roleDesc" column="roleDesc"></result>
+            <collection property="permissionList" ofType="com.xuan.selectcourse.pojo.Permission">
+                <result property="permission" column="permission"></result>
+                <result property="url" column="url"></result>
+            </collection>
+        </collection>
+    </resultMap>
+
+<!--    查询管理员的详情-->
+    <select id="findDesc" resultMap="adminMap" parameterType="integer">
+        SELECT admin.id,admin.`name`,role.roleName,role.roleDesc,permission.permission,permission.url
+        FROM admin
+                 LEFT JOIN `user`
+                           ON admin.username=`user`.username
+                 LEFT JOIN user_role
+                           ON `user`.id = user_role.user_id
+                 LEFT JOIN role
+                           ON user_role.role_id = role.id
+                 LEFT JOIN role_permission
+                           ON role.id = role_permission.role_id
+                 LEFT JOIN permission
+                           ON role_permission.permission_id = permission.id
+        WHERE admin.id=#{id};
+    </select>
+
+<!--    删除该管理员全部的角色-->
+    <delete id="deleteAdminAllRoles" parameterType="int">
+        DELETE FROM user_role
+        WHERE user_role.user_id = (SELECT	`user`.id
+                                   FROM admin
+                                            LEFT JOIN `user`
+                                                      ON admin.username=`user`.username
+                                   WHERE admin.id=#{id})
+    </delete>
+
+
+    <insert id="addAdminRole">
+        INSERT INTO user_role VALUES ( (SELECT `user`.id
+                                        FROM admin
+                                                 LEFT JOIN `user`
+                                                           ON admin.username=`user`.username
+                                        WHERE admin.id=#{aid}) ,#{rid})
+    </insert>
+
+</mapper>

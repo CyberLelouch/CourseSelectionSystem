@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>首页</title>
+    <th:block th:replace="/common_resources::common_css"></th:block>
+    <th:block th:replace="/common_resources::common_js"></th:block>
+
+</head>
+
+<body class="hold-transition skin-purple sidebar-mini">
+
+<header th:replace="~{/common_header::header}"></header>
+<aside th:replace="~{/common_aside::aside}"></aside>
+
+    <div class="wrapper">
+        <div class="content-wrapper">
+            <strong style="margin: auto">欢迎━(*｀∀´*)ノ亻!</strong>
+        </div>
+    </div>
+
+<footer th:replace="/common_footer::footer"></footer>
+</body>
+
+</html>

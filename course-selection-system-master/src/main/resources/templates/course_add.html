@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html  xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!-- 页面meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>新增课程页面</title>
+    <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
+    <th:block th:replace="/common_resources::common_css"></th:block>
+    <th:block th:replace="/common_resources::common_js"></th:block>
+</head>
+
+<body class="hold-transition skin-purple sidebar-mini">
+
+<header th:replace="~{/common_header::header}"></header>
+<aside th:replace="/common_aside::aside"></aside>
+
+<div class="wrapper">
+
+
+    <!-- 内容区域 -->
+    <!-- @@master = admin-layout.html-->
+    <!-- @@block = content -->
+
+    <div class="content-wrapper">
+
+        <!-- 内容头部 -->
+        <section class="content-header">
+            <h1>
+                课程信息管理
+                <small>课程信息</small>
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="/index"><i class="fa fa-dashboard"></i> 首页</a></li>
+                <li><a href="/course/all">课程信息管理</a></li>
+                <li class="active">课程信息</li>
+            </ol>
+        </section>
+        <!-- 内容头部 /-->
+
+        <!-- 正文区域 -->
+        <section class="content">
+
+            <div class="box-body">
+
+                <!--tab页-->
+                <div class="nav-tabs-custom">
+
+                    <!--tab内容-->
+                    <div class="tab-content">
+
+                        <form >
+                            <!--基础控件-->
+
+                            <div class="tab-pane" id="tab-common">
+
+                                <div class="row data-type">
+
+
+                                    <div class="col-md-2 title">课程名</div>
+                                    <div class="col-md-4 data">
+                                        <input type="text" class="form-control" placeholder="课程名" name="courseName" id="courseName">
+                                    </div>
+
+
+
+                                    <div class="col-md-2 title">课程介绍</div>
+                                    <div class="col-md-4 data">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" placeholder="课程介绍" name="courseDesc" id="courseDesc">
+
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-md-2 title"></div>
+                                    <div class="col-md-10 data text-center">
+                                        <button type="button" class="btn bg-maroon" id="submit">保存</button>
+                                        <button type="button" class="btn bg-default" onclick="history.back(-1);">返回</button>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <!--基础控件/-->
+                        </form>
+
+
+                    </div>
+                    <!--tab内容/-->
+
+                </div>
+                <!--tab页/-->
+
+
+
+            </div>
+
+        </section>
+        <!-- 正文区域 /-->
+
+    </div>
+    <!-- @@close -->
+    <!-- 内容区域 /-->
+
+
+</div>
+<script>
+    $(function () {
+        $("#submit").click(function (){
+            addCourse();
+        });
+    });
+    function addCourse() {
+
+        var courseName=$("#courseName").val();
+        var courseDesc=$("#courseDesc").val();
+
+        var data={
+            courseName:courseName,
+            courseDesc:courseDesc
+        };
+
+        $.post("course/add",data,function (result){
+            if (result=="添加失败"){
+                alert("添加失败,课程已存在");
+                location.href="/course_add.html";
+
+            }else {
+
+                alert("添加成功");
+                location.href="/course/all";
+            }
+
+        })
+    }
+
+</script>
+
+<footer th:replace="~{/common_footer::footer}"></footer>
+
+</body>
+
+</html>

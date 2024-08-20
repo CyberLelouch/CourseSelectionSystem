@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!-- 页面meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>我的课程页面</title>
+    <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
+    <th:block th:replace="/common_resources::common_css"></th:block>
+    <th:block th:replace="/common_resources::common_js"></th:block>
+
+</head>
+
+<body class="hold-transition skin-purple sidebar-mini">
+
+<header th:replace="~{/common_header::header}"></header>
+<aside th:replace="/common_aside::aside"></aside>
+
+<div class="wrapper">
+
+    <div class="content-wrapper">
+
+        <!-- 内容头部 -->
+        <section class="content-header">
+            <h1>
+                我的课程管理
+                <small>课程计划列表</small>
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="/index"><i class="fa fa-dashboard"></i> 首页</a></li>
+                <li><a th:href="@{/syllabus/selectedCourse(username=${#authentication.name})}">我的课程管理</a></li>
+                <li class="active">课程计划列表</li>
+            </ol>
+        </section>
+        <!-- 内容头部 /-->
+
+        <!-- 正文区域 -->
+        <section class="content">
+
+            <!-- .box-body -->
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">列表</h3>
+                </div>
+
+                <div class="box-body">
+
+                    <!-- 数据表格 -->
+                    <div class="table-box">
+
+                        <!--数据列表-->
+                        <table id="dataList" class="table table-bordered table-striped table-hover dataTable">
+                            <thead>
+                            <tr>
+
+                                <th >学时</th>
+                                <th >学分</th>
+                                <th >地址</th>
+                                <th >人数</th>
+                                <th >课程</th>
+                                <th >任课教师</th>
+                                <th >操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr th:each="syllabusVO:${syllabusVOIPage.records}">
+                                <input type="hidden" th:value="${syllabusVO.id}" id="teacherId">
+                                <td th:text="${syllabusVO.class_hour}"></td>
+                                <td th:text="${syllabusVO.credit}"></td>
+                                <td th:text="${syllabusVO.address}"></td>
+                                <td th:text="${syllabusVO.number}"></td>
+                                <td th:text="${syllabusVO.courseName}"></td>
+                                <td th:text="${syllabusVO.teacherName}"></td>
+                                <td class="text-center">
+
+                                    <button type="button" class="btn bg-red btn-xs" th:id="${syllabusVO.id}" onclick="delSyllabus(this.id,username)">退选</button>
+
+                                </td>
+                            </tr>
+
+                            </tbody>
+
+                        </table>
+                        <!--数据列表/-->
+
+
+                    </div>
+                    <!-- 数据表格 /-->
+
+
+                </div>
+                <!-- /.box-body -->
+
+                <!-- .box-footer-->
+                <div class="box-footer">
+                    <div class="pull-left">
+                        <div class="form-group form-inline">
+                            总共 <span th:text="${syllabusVOIPage.pages}"></span> 页，
+                            共<span th:text="${syllabusVOIPage.total}"></span> 条数据
+                        </div>
+                    </div>
+
+                    <div class="box-tools pull-right">
+                        <ul class="pagination"></ul>
+                    </div>
+
+                </div>
+                <!-- /.box-footer-->
+
+
+
+            </div>
+
+        </section>
+        <!-- 正文区域 /-->
+
+    </div>
+
+</div>
+<script>
+
+    var username=[[${#authentication.name}]];
+    function delSyllabus(id,username) {
+        if (confirm("是否退选？")==true){
+            deleteSyllabus(id,username);
+        }
+    };
+
+    function deleteSyllabus(syllabusId,username) {
+        console.log(syllabusId);
+        $.get("/syllabus/deselect",{username:username,syllabusId:syllabusId},function (result){
+            alert(result);
+            location.href="/syllabus/selectedCourse?username="+username;
+        })
+    };
+
+</script>
+<footer th:replace="~{/common_footer::footer}"></footer>
+<script th:inline="javascript">
+
+    var currentPage=[[${syllabusVOIPage.current}]];
+    var pages=[[${syllabusVOIPage.pages}]];
+    var context=[[${#servletContext.contextPath}]];
+    var username=[[${#authentication.name}]];
+    // 分页插件
+
+    $(".pagination").bootstrapPaginator({
+        bootstrapMajorVersion: 3, // bootstrap版本
+        currentPage: currentPage, // 当前页
+        totalPages: pages, // 总页数
+        numberOfPages: 5, // 最多显示多少页
+        itemTexts: function (type, page, current) {
+            switch (type) {
+                case "first":
+                    return "首页";
+                case "prev":
+                    return "上一页";
+                case "next":
+                    return "下一页";
+                case "last":
+                    return "末页";
+                case "page":
+                    return page;
+            }
+        },
+        onPageClicked: function (event, originalEvent, type, page) { // 点击页码执行的方法
+
+                location.href =context+ "/syllabus/selectedCourse?page=" + page+"&username="+username;
+
+
+
+        }
+    });
+
+</script>
+</body>
+
+</html>

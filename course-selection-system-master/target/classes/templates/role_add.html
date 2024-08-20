@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>新增角色</title>
+    <th:block th:replace="/common_resources::common_css"></th:block>
+    <th:block th:replace="/common_resources::common_js"></th:block>
+</head>
+
+<body class="hold-transition skin-purple sidebar-mini">
+
+<header th:replace="~{/common_header::header}"></header>
+<aside th:replace="~{/common_aside::aside}"></aside>
+
+    <div class="wrapper">
+        <div class="content-wrapper">
+
+            <!-- 内容头部 -->
+            <section class="content-header">
+                <h1>
+                    角色管理
+                    <small>新增角色</small>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="@{/index}"><i class="fa fa-dashboard"></i> 首页</a></li>
+                    <li><a th:href="@{/role/all}">角色管理</a></li>
+                    <li class="active">新增角色</li>
+                </ol>
+            </section>
+            <!-- 内容头部 /-->
+
+            <!-- 正文区域 -->
+            <section class="content">
+                <form th:action="@{/role/add}" method="post">
+<!--                    <div class="tab-pane" id="tab-common">-->
+                        <div class="row data-type">
+                            <div class="panel panel-heading">角色信息</div>
+                            <div class="col-md-2 title">角色名称</div>
+                            <div class="col-md-4 data">
+                                <input type="text" class="form-control" placeholder="用户名称" name="roleName" value="">
+                            </div>
+
+                            <div class="col-md-2 title">角色描述</div>
+                            <div class="col-md-4 data">
+                                <input type="text" class="form-control" placeholder="角色描述" name="roleDesc" value="">
+                            </div>
+
+                            <div class="col-md-2 title"></div>
+                            <div class="col-md-10 data text-center">
+                                <button type="submit" class="btn bg-maroon">保存</button>
+                                <button type="button" class="btn bg-default" onclick="history.back(-1);">返回</button>
+                            </div>
+
+                        </div>
+<!--                    </div>-->
+                </form>
+                
+            </section>
+            <!-- 正文区域 /-->
+        </div>
+    </div>
+
+<footer th:replace="~{/common_footer::footer}"></footer>
+
+</body>
+
+</html>

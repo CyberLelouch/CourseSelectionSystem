@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xuan.selectcourse.mapper.SyllabusMapper">
+<!--    定义返回类型为SyllabusVO对象-->
+    <resultMap id="SyllabusMap" type="com.xuan.selectcourse.bean.SyllabusVO">
+        <result property="id" column="sid"></result>
+        <result property="class_hour" column="class_hour"></result>
+        <result property="credit" column="credit"></result>
+        <result property="address" column="address"></result>
+        <result property="number" column="number"></result>
+        <result property="courseName" column="courseName"></result>
+        <result property="teacherName" column="teacherName"></result>
+        <result property="course_id" column="course_id"></result>
+        <result property="teacher_id" column="teacher_id"></result>
+    </resultMap>
+
+    <select id="showSyllabusVOPage" resultMap="SyllabusMap">
+        SELECT syllabus.id AS sid,class_hour,
+               credit,address,number,courseName,teacher.`name` as teacherName,teacher_id,course_id
+        FROM syllabus
+                 LEFT JOIN teacher
+                           ON syllabus.teacher_id=teacher.id
+                 LEFT JOIN course
+                           ON syllabus.course_id=course.id
+        ${ew.customSqlSegment}
+    </select>
+
+    <select id="showSelectSyllabusVOPage" resultMap="SyllabusMap">
+        SELECT syllabus.id AS sid,class_hour,
+               credit,address,number,courseName,teacher.`name` as teacherName,teacher_id,course_id
+        FROM syllabus
+                 LEFT JOIN teacher
+                           ON syllabus.teacher_id=teacher.id
+                 LEFT JOIN course
+                           ON syllabus.course_id=course.id
+        WHERE syllabus.id not IN (
+            SELECT student_syllabus.syllabusId
+            FROM student_syllabus
+                     LEFT JOIN student
+                               ON student.id=student_syllabus.studentId
+              ${ew.customSqlSegment}
+        )
+
+    </select>
+
+    <select id="showSelectedSyllabusVOPage" resultMap="SyllabusMap">
+        SELECT syllabus.id AS sid,class_hour,
+               credit,address,number,courseName,teacher.`name` as teacherName,teacher_id,course_id
+        FROM syllabus
+                 LEFT JOIN teacher
+                           ON syllabus.teacher_id=teacher.id
+                 LEFT JOIN course
+                           ON syllabus.course_id=course.id
+        WHERE syllabus.id IN (
+            SELECT student_syllabus.syllabusId
+            FROM student_syllabus
+                     LEFT JOIN student
+                               ON student.id=student_syllabus.studentId
+              ${ew.customSqlSegment}
+            )
+
+    </select>
+
+    <delete id="deselect" parameterType="integer">
+        DELETE FROM student_syllabus
+        WHERE student_syllabus.studentId=#{studentId}
+        AND
+            student_syllabus.syllabusId=#{syllabusId}
+    </delete>
+
+    <insert id="selectCourse" parameterType="integer">
+        INSERT INTO student_syllabus VALUES(#{studentId},#{syllabusId})
+    </insert>
+
+
+</mapper>

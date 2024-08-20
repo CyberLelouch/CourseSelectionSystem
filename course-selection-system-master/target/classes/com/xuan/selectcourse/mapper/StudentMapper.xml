@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xuan.selectcourse.mapper.StudentMapper">
+<!--    定义返回类型为StudentVO对象-->
+    <resultMap id="StudentVOMap" type="com.xuan.selectcourse.bean.StudentVO">
+        <result property="id" column="sid"></result>
+        <result property="username" column="sUsername"></result>
+        <result property="name" column="sName"></result>
+        <result property="sex" column="sSex"></result>
+        <result property="birthday" column="birthday"></result>
+        <result property="phoneNumber" column="sPhoneNumber"></result>
+        <result property="classId" column="cId"></result>
+        <result property="className" column="className"></result>
+        <result property="teacherId" column="tId"></result>
+        <result property="teacherName" column="tName"></result>
+    </resultMap>
+
+    <select id="showStudentVO" resultMap="StudentVOMap">
+        SELECT student.id as sId,student.username as sUsername,
+               student.`name` as sName,student.sex as sSex,student.birthday,
+               student.phoneNumber as sPhoneNumber,class.id as cId,
+               class.className,teacher.id as tId,teacher.`name` as tName
+        FROM student
+                 LEFT JOIN class
+                           ON student.class_id = class.id
+                 LEFT JOIN teacher
+                           ON class.teacher_id = teacher.id
+    </select>
+
+    <select id="showStudentVOPage" resultMap="StudentVOMap">
+        SELECT student.id as sId,student.username as sUsername,
+               student.`name` as sName,student.sex as sSex,student.birthday,
+               student.phoneNumber as sPhoneNumber,class.id as cId,
+               class.className,teacher.id as tId,teacher.`name` as tName
+        FROM student
+                 LEFT JOIN class
+                           ON student.class_id = class.id
+                 LEFT JOIN teacher
+                           ON class.teacher_id = teacher.id ${ew.customSqlSegment}
+    </select>
+
+
+</mapper>

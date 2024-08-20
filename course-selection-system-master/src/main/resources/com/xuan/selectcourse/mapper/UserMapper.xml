@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- Mapper配置文件，定义了UserMapper接口对应的SQL映射 -->
+<mapper namespace="com.xuan.selectcourse.mapper.UserMapper">
+
+    <!-- 定义结果映射 -->
+    <resultMap id="findUsernamePermission" type="com.xuan.selectcourse.pojo.User">
+        <!-- 用户名 -->
+        <result property="username" column="username"/>
+        <!-- 用户权限集合 -->
+        <collection property="permissions" ofType="com.xuan.selectcourse.pojo.Permission">
+            <result property="url" column="url"/>
+        </collection>
+    </resultMap>
+    <!-- <resultMap>：定义了结果映射，用于将查询结果映射到Java对象。
+    id：结果映射的唯一标识符，findUsernamePermission。
+    type：映射结果的Java类，即com.xuan.selectcourse.pojo.User。
+    <result>：映射单个属性，property为Java类的属性名，column为数据库列名。
+    <collection>：映射一个集合属性，property为集合属性名，ofType为集合元素的Java类 -->
+
+    <!-- 根据用户名查询用户权限 -->
+    <select id="findPermissionsByUsername" parameterType="string" resultMap="findUsernamePermission">
+        SELECT `user`.username, permission.url
+        FROM `user`
+                 LEFT JOIN user_role ON `user`.id = user_role.user_id
+                 LEFT JOIN role ON user_role.role_id = role.id
+                 LEFT JOIN role_permission ON role.id = role_permission.role_id
+                 LEFT JOIN permission ON role_permission.permission_id = permission.id
+        WHERE `user`.username = #{username};
+    </select>
+    <!-- <select>：定义一个查询操作。
+id：查询的唯一标识符，findPermissionsByUsername。
+parameterType：参数类型，string，表示传入一个字符串参数。
+resultMap：查询结果映射使用的resultMap，findUsernamePermission。
+SQL语句：查询用户及其权限，使用LEFT JOIN连接多个表，根据用户名查询。-->
+
+    <!-- 根据用户名删除用户角色 -->
+    <delete id="deleteRoleByUsername" parameterType="string">
+        DELETE FROM user_role
+        WHERE user_role.user_id = (
+            SELECT `user`.id
+            FROM `user`
+            WHERE `user`.username = #{username}
+        );
+    </delete>
+
+    <!-- 新增用户角色 -->
+    <insert id="addUserRole" parameterType="integer">
+        INSERT INTO user_role (user_id, role_id) VALUES (#{uid}, #{rid});
+    </insert>
+
+    <!-- 删除用户角色 -->
+    <delete id="deleteUserRole" parameterType="integer">
+        DELETE FROM user_role WHERE user_id = #{id};
+    </delete>
+
+</mapper>

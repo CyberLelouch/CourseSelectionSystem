@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html  xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!-- 页面meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>修改课程计划信息页面</title>
+    <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
+    <th:block th:replace="/common_resources::common_css"></th:block>
+    <th:block th:replace="/common_resources::common_js"></th:block>
+</head>
+
+<body class="hold-transition skin-purple sidebar-mini">
+
+<header th:replace="~{/common_header::header}"></header>
+<aside th:replace="/common_aside::aside"></aside>
+
+<div class="wrapper">
+
+
+    <!-- 内容区域 -->
+    <!-- @@master = admin-layout.html-->
+    <!-- @@block = content -->
+
+    <div class="content-wrapper">
+
+        <!-- 内容头部 -->
+        <section class="content-header">
+            <h1>
+                课程计划信息管理
+                <small>修改课程计划</small>
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="/index"><i class="fa fa-dashboard"></i> 首页</a></li>
+                <li><a th:href="@{/syllabus/all(teacherName=${#request.session.getAttribute('name')})}">课程计划信息管理</a></li>
+                <li class="active">修改课程计划</li>
+            </ol>
+        </section>
+        <!-- 内容头部 /-->
+
+        <!-- 正文区域 -->
+        <section class="content">
+
+            <div class="box-body">
+
+                <!--tab页-->
+                <div class="nav-tabs-custom">
+
+                    <!--tab内容-->
+                    <div class="tab-content">
+
+                        <form >
+                            <!--基础控件-->
+
+                            <div class="tab-pane" id="tab-common">
+
+                                <div class="row data-type">
+                                    <input type="hidden" name="id" id="id" th:value="${syllabus.id}">
+                                    <div class="col-md-2 title">学时</div>
+                                    <div class="col-md-4 data">
+                                        <input type="text" class="form-control" placeholder="学时" name="class_hour"  id="class_hour" th:value="${syllabus.class_hour}">
+                                    </div>
+
+                                    <div class="col-md-2 title">学分</div>
+                                    <div class="col-md-4 data">
+                                        <input type="text" class="form-control" placeholder="学分" name="credit" id="credit" th:value="${syllabus.credit}">
+                                    </div>
+
+                                    <div class="col-md-2 title">地址</div>
+                                    <div class="col-md-4 data">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" placeholder="地址" name="address" id="address" th:value="${syllabus.address}">
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 title">选课人数</div>
+                                    <div class="col-md-4 data">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control"  name="number" id="number" disabled th:value="${syllabus.number}">
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 title">任课教师</div>
+                                    <div class="col-md-4 data">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control"  name="teacherName" id="teacherName" disabled th:value="${#request.session.getAttribute('name')}">
+
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2 title">课程</div>
+                                    <div class="col-md-4 data">
+                                        <select class="form-control select2" name="courseName" id="courseName"  style="width: 100%;">
+
+                                            <option th:each="course:${courseList}"  th:text="${course.courseName}"></option>
+                                        </select>
+                                    </div>
+
+
+                                    <div class="col-md-2 title"></div>
+                                    <div class="col-md-10 data text-center">
+                                        <button type="button" class="btn bg-maroon" id="submit">保存</button>
+                                        <button type="button" class="btn bg-default" onclick="history.back(-1);">返回</button>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <!--基础控件/-->
+                        </form>
+
+
+                    </div>
+                    <!--tab内容/-->
+
+                </div>
+                <!--tab页/-->
+
+
+
+            </div>
+
+        </section>
+        <!-- 正文区域 /-->
+
+    </div>
+    <!-- @@close -->
+    <!-- 内容区域 /-->
+
+
+</div>
+<script>
+    $(function () {
+        $("#submit").click(function (){
+            updateSyllabus();
+        });
+    });
+    function updateSyllabus() {
+        var id=$("#id").val();
+        var class_hour=$("#class_hour").val();
+        var credit=$("#credit").val();
+        var address=$("#address").val();
+        var number=$("#number").val();
+        var teacherName=$("#teacherName").val();
+        var courseName=$("#courseName").val();
+        var username=[[${#authentication.name}]];
+        var data={
+            id:id,
+            class_hour:class_hour,
+            credit:credit,
+            address:address,
+            number:number,
+            courseName:courseName,
+            username:username
+        };
+
+        $.post("/syllabus/update",data,function (result){
+
+                alert(result);
+                location.href="/syllabus/all?teacherName="+teacherName;
+
+        })
+    }
+
+</script>
+
+<footer th:replace="~{/common_footer::footer}"></footer>
+
+</body>
+
+</html>

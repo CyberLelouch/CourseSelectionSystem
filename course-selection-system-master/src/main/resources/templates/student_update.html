@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html  xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!-- 页面meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>修改学生信息页面</title>
+    <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
+    <th:block th:replace="/common_resources::common_css"></th:block>
+    <th:block th:replace="/common_resources::common_js"></th:block>
+</head>
+
+<body class="hold-transition skin-purple sidebar-mini">
+
+<header th:replace="~{/common_header::header}"></header>
+<aside th:replace="/common_aside::aside"></aside>
+
+<div class="wrapper">
+
+
+    <!-- 内容区域 -->
+    <!-- @@master = admin-layout.html-->
+    <!-- @@block = content -->
+
+    <div class="content-wrapper">
+
+        <!-- 内容头部 -->
+        <section class="content-header">
+            <h1>
+                学生信息管理
+                <small>学生信息表单</small>
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="/index"><i class="fa fa-dashboard"></i> 首页</a></li>
+                <li><a href="/student/all">学生信息管理</a></li>
+                <li class="active">学生信息表单</li>
+            </ol>
+        </section>
+        <!-- 内容头部 /-->
+
+        <!-- 正文区域 -->
+        <section class="content">
+
+            <div class="box-body">
+
+                <!--tab页-->
+                <div class="nav-tabs-custom">
+
+                    <!--tab内容-->
+                    <div class="tab-content">
+
+                        <form >
+                            <!--基础控件-->
+
+                            <div class="tab-pane" id="tab-common">
+
+                                <div class="row data-type">
+                                    <input type="hidden" name="id" id="id" th:value="${student.id}">
+                                    <div class="col-md-2 title">学号</div>
+                                    <div class="col-md-4 data">
+                                        <input type="text" class="form-control" placeholder="学号" name="username" disabled id="username" th:value="${student.username}">
+                                    </div>
+
+                                    <div class="col-md-2 title">名字</div>
+                                    <div class="col-md-4 data">
+                                        <input type="text" class="form-control" placeholder="名字" name="name" id="name" th:value="${student.name}">
+                                    </div>
+
+                                    <div class="col-md-2 title">性别</div>
+                                    <div class="col-md-4 data">
+                                        <select class="form-control" name="sex" id="sex" th:value="${student.sex}">
+                                            <option>男</option>
+                                            <option>女</option>
+
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-2 title">电话</div>
+                                    <div class="col-md-4 data">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" placeholder="电话" name="phoneNumber" id="phoneNumber" th:value="${student.phoneNumber}">
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 title">生日</div>
+                                    <div class="col-md-4 data">
+                                        <div class="input-group">
+                                            <input type="date" class="form-control" placeholder="生日" name="birthday" id="birthday" th:text="${#dates.format(student.birthday,'yyyy-MM-dd')}" th:value="${student.birthday}">
+
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2 title">班级</div>
+                                    <div class="col-md-4 data">
+                                        <select class="form-control select2" name="className" id="className"  style="width: 100%;">
+
+                                            <option th:each="class:${classList}"  th:text="${class.className}"></option>
+                                        </select>
+                                    </div>
+
+
+                                    <div class="col-md-2 title"></div>
+                                    <div class="col-md-10 data text-center">
+                                        <button type="button" class="btn bg-maroon" id="submit">保存</button>
+                                        <button type="button" class="btn bg-default" onclick="history.back(-1);">返回</button>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <!--基础控件/-->
+                        </form>
+
+
+                    </div>
+                    <!--tab内容/-->
+
+                </div>
+                <!--tab页/-->
+
+
+
+            </div>
+
+        </section>
+        <!-- 正文区域 /-->
+
+    </div>
+    <!-- @@close -->
+    <!-- 内容区域 /-->
+
+
+</div>
+<script>
+    $(function () {
+        $("#submit").click(function (){
+            updateStudent();
+        });
+    });
+    function updateStudent() {
+        var id=$("#id").val();
+        var username=$("#username").val();
+        var name=$("#name").val();
+        var sex=$("#sex").val();
+        var phoneNumber=$("#phoneNumber").val();
+        var birthday=$("#birthday").val().toString();
+        var className=$("#className").val();
+        var data={
+            id:id,
+            username:username,
+            name:name,
+            sex:sex,
+            phoneNumber:phoneNumber,
+            birthday:birthday,
+            className:className
+        };
+        console.log(data.className)
+        $.post("/student/update",data,function (result){
+
+                alert(result);
+                location.href="/student/all";
+
+        })
+    }
+
+</script>
+
+<footer th:replace="~{/common_footer::footer}"></footer>
+
+</body>
+
+</html>

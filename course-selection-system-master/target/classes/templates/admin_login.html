@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>登录</title>
+    <!-- 引入公共的CSS资源 -->
+    <th:block th:replace="/common_resources::common_css"></th:block>
+    <!-- 引入公共的JS资源 -->
+    <th:block th:replace="/common_resources::common_js"></th:block>
+</head>
+
+<body class="hold-transition login-page" id="tu" style="background: url('https://copyright.bdstatic.com/vcg/creative/ad33bd675e268eb6d747fdb214fe157e.eps@wm_1,k_cGljX2JqaHdhdGVyLmpwZw=='); background-size: cover;">
+<!-- 登录框 -->
+<div class="login-box">
+    <!-- 登录logo -->
+    <div class="login-logo">
+        <a href="#" style="color: #3c51bc"><b style="color: #3c51bc">选课</b>管理系统</a>
+    </div>
+    <!-- 登录框主体 -->
+    <div class="login-box-body">
+        <p class="login-box-msg">登录系统</p>
+
+        <!-- 登录表单 -->
+        <form action="/user/login" method="post"><!-- 登录处理URL:/user/login -->
+            <!-- 用户名输入框 -->
+            <div class="form-group has-feedback">
+                <input type="text" name="username" class="form-control" placeholder="账号">
+                <span class="fa fa-user form-control-feedback"></span>
+            </div>
+            <!-- 密码输入框 -->
+            <div class="form-group has-feedback">
+                <input type="password" name="password" class="form-control" placeholder="密码">
+                <span class="fa fa-unlock-alt form-control-feedback"></span>
+            </div>
+            <!-- 验证码输入框 -->
+            <div class="form-group input-group margin">
+                <input type="text" name="code" id="code" class="form-control" placeholder="验证码">
+                <span class="input-group-btn">
+                        <img class="btn" id="checkCode" src="/checkCode" style="width: 75px; height: 35px; margin: 0; padding: 0;" onclick="change()">
+                    </span>
+            </div>
+
+            <!-- 验证码刷新脚本 -->
+            <script type="text/javascript">
+                function change() {
+                    // 更换验证码图片，通过添加随机数参数防止缓存
+                    $("#checkCode").attr("src", "/checkCode?" + Math.random());
+                    <!--$("#checkCode")：通过jQuery选择器$找到HTML文档中id为checkCode的元素。
+                    .attr("src", "/checkCode?" + Math.random())：调用jQuery的attr方法设置该元素的src属性。
+                    src属性的值被设置为/checkCode?加上一个随机数，这通常用于防止浏览器缓存图像，使得每次请求都会得到一个新的验证码。-->
+                }
+            </script>
+
+            <!-- 隐藏输入框，用于传递用户状态 -->
+            <input type="hidden" name="status" class="form-control" th:value="2">
+
+            <!-- 登录按钮 -->
+            <div class="row">
+                <div class="col-xs-12">
+                    <button type="submit" class="btn btn-primary btn-block btn-flat">登录</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- 初始化iCheck插件脚本 -->
+<script>
+    $(function() {
+        $("input").iCheck({
+            checkboxClass: 'icheckbox_square-blue',
+            radioClass: 'iradio_square-blue',
+            increaseArea: '20%' // 可选
+        });
+    });
+</script>
+</body>
+
+</html>
